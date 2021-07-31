@@ -38,26 +38,34 @@ namespace MyNotes.Data
         #region Get Note by Id
         public async Task<Note> GetNoteAsync(int Id)
         {
-            Note employee = await _appDBContext.Notes.FirstOrDefaultAsync(c => c.Id.Equals(Id));
-            return employee;
+            Note note = await _appDBContext.Notes.FirstOrDefaultAsync(c => c.Id.Equals(Id));
+            return note;
         }
         #endregion
 
         #region Update Note
-        public async Task<bool> UpdateNoteAsync(Note employee)
+        public async Task<bool> UpdateNoteAsync(Note note)
         {
-            _appDBContext.Notes.Update(employee);
+            _appDBContext.Notes.Update(note);
             await _appDBContext.SaveChangesAsync();
             return true;
         }
         #endregion
 
         #region Delete Note
-        public async Task<bool> DeleteNoteAsync(Note employee)
+        public async Task<bool> DeleteNoteAsync(Note note)
         {
-            _appDBContext.Remove(employee);
+            _appDBContext.Remove(note);
             await _appDBContext.SaveChangesAsync();
             return true;
+        }
+        #endregion
+
+        #region Seach Note
+        public async Task<List<Note>> SeachTermsAsync(string searchItem)
+        {
+            return await _appDBContext.Notes.Where(s => s.Title.ToLower().Contains(searchItem.ToLower())
+            || s.Text.ToLower().Contains(searchItem.ToLower())).ToListAsync();
         }
         #endregion
     }

@@ -8,6 +8,8 @@
 </NavLink>
 
 <h1>Notes</h1>
+<input type="text" @bind-value="@searchTerm" />
+<input type="button" value="Search" @onclick="@SearchNotes" />
 @if (NoteObj is null)
 {
     <p><em>Loading... !</em></p>
@@ -44,9 +46,15 @@ else
 
 
 @code {
+    private string searchTerm;
     List<Note> NoteObj;
     protected override async Task OnInitializedAsync()
     {
         NoteObj = await Task.Run(() => noteService.GetAllNotesAsync());
+    }
+
+    protected async Task SearchNotes()
+    {
+        NoteObj = await Task.Run(() => noteService.SeachTermsAsync(searchTerm));
     }
 }
