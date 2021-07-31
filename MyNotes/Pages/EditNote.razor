@@ -1,0 +1,51 @@
+﻿@page "/EditNote/{Id}"
+@using MyNotes.Data
+@inject NoteService noteService
+@inject NavigationManager NavigationManager
+
+<h2>Edit Note</h2>
+<hr />
+
+<form>
+    <div class="row">
+        <div class="col-md-8">
+            <div class="form-group">
+                <label for="Name" class="control-label">Title</label>
+                <input form="Name" class="form-control" @bind="@obj.Title" />
+            </div>
+            <div class="form-group">
+                <label for="Designation" class="control-label">Text</label>
+                <input form="Designation" class="form-control" @bind="@obj.Text" />
+            </div>
+
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-4">
+            <div class="form-group">
+                <input type="button" class="btn btn-primary" @onclick="@UpdateNote" value="Update" />
+                <input type="button" class="btn btn-primary" @onclick="@Cancel" value="Cancel" />
+            </div>
+        </div>
+    </div>
+</form>
+
+@code {
+    [Parameter]
+    public string Id { get; set; }
+    Note obj = new Note();
+    protected override async Task OnInitializedAsync()
+    {
+        obj = await Task.Run(() => noteService.GetNoteAsync(Convert.ToInt32(Id)));
+    }
+    protected async void UpdateNote()
+    {
+        await noteService.UpdateNoteAsync(obj);
+        NavigationManager.NavigateTo("Notes");
+    }
+    void Cancel()
+    {
+        NavigationManager.NavigateTo("Notes");
+    }
+}

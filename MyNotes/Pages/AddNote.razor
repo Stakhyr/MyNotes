@@ -1,0 +1,45 @@
+﻿@page "/AddNote"
+@using MyNotes.Data
+@inject NoteService noteServive
+@inject NavigationManager NavigationManager
+
+<h2>Add Employee</h2>
+<hr />
+
+<form>
+    <div class="row">
+        <div class="col-md-8">
+            <div class="form-group">
+                <label for="Name" class="control-label">Title</label>
+                <input form="Name" class="form-control" @bind="@obj.Title" />
+            </div>
+            <div class="form-group">
+                <label for="Designation" class="control-label">Text</label>
+                <input form="Designation" class="form-control" @bind="@obj.Text" />
+            </div>
+
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-4">
+            <div class="form-group">
+                <input type="button" class="btn btn-primary" @onclick="@CreateNote" value="Save" />
+                <input type="button" class="btn btn-primary" @onclick="@Cancel" value="Cancel" />
+            </div>
+        </div>
+    </div>
+</form>
+
+@code {
+    Note obj = new Note();
+    protected async void CreateNote()
+    {
+        await noteServive.InsertNoteAsync(obj);
+        NavigationManager.NavigateTo("Notes");
+    }
+    void Cancel()
+    {
+        NavigationManager.NavigateTo("Notes");
+    }
+}

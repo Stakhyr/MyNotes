@@ -30,8 +30,9 @@ namespace MyNotes
             services.AddRazorPages();
             services.AddServerSideBlazor();
             services.AddSingleton<WeatherForecastService>();
+            services.AddScoped<NoteService>();
             services.AddDbContext<MyNotesDbContext>(options =>
-            options.UseSqlite(
+            options.UseNpgsql(
                 Configuration.GetConnectionString("DefaultConnection")));
         }
 
