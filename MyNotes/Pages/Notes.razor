@@ -36,35 +36,42 @@ else
         <tbody>
             @foreach (var note in NoteObj)
             {
-            <tr>
-                <td>@note.Title</td>
-                <td>@note.Text</td>
-                <td>
-                    <a class="nav-link" href="EditNote/@note.Id">
-                        <div class="btn btn-primary" aria-hidden="true">View</div>
-                    </a>
-                </td>
-                <td>
-                    <a class="nav-link" href="EditNote/@note.Id">
-                        <div class="btn btn-primary" aria-hidden="true">Edit</div>
-                    </a>
-                </td>
-                <td>
-                    <a class="nav-link" href="DeleteNote/@note.Id">
-                        <div class="btn btn-primary" aria-hidden="true">Delete</div>
-                    </a>
+                <tr>
+                    <td>@note.Title</td>
+                    <td>@note.Text</td>
+                    <td>
+                        <button class="btn btn-primary"  @onclick="()=>Show(note.Id)"> @ButtonName</button>
+                    </td>
+                    <td>
+                        <a class="nav-link" href="EditNote/@note.Id">
+                            <div class="btn btn-primary" aria-hidden="true">Edit</div>
+                        </a>
+                    </td>
+                    <td>
+                        <a class="nav-link" href="DeleteNote/@note.Id">
+                            <div class="btn btn-primary" aria-hidden="true">Delete</div>
+                        </a>
 
-                </td>
-            </tr>
-            }
-        </tbody>
+                    </td>
+                </tr>
+                <tr>
+                    <td hidden="@HideText">@noteText</td>
+                </tr>
+             }
+            </tbody>
     </table>
 }
 
 
 @code {
-    private int totalNotes =0;
+
+    private int totalNotes = 0;
     private string searchTerm;
+    bool IsTaskRunning = false;
+    string ButtonName = "View note";
+    private bool HideText { get; set; } = true;
+    private string noteText;
+
     List<Note> NoteObj;
     protected override async Task OnInitializedAsync()
     {
@@ -81,4 +88,30 @@ else
     {
         totalNotes = NoteObj.Count;
     }
+
+    protected async Task Clicked()
+    {
+        await Task.Delay(500);
+
+        IsTaskRunning = true;
+        ButtonName = "Hide note";
+
+        IsTaskRunning = false;
+        if(IsTaskRunning==false) ButtonName = "View note";
+        //Show();
+        //await Task.Run(() => );
+        HideText = !HideText;
+
+        //IsTaskRunning = false; use this to enable the button after the button click function executed
+        StateHasChanged();
+    }
+
+    //get note text
+    private async Task Show(int id)
+    {
+        HideText = !HideText;
+        noteText = await Task.Run(() => noteService.GetNoteText(id));
+    }
+
+
 }

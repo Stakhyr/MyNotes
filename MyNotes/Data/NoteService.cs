@@ -70,7 +70,11 @@ namespace MyNotes.Data
         #endregion
 
         #region Total Notes Count
-
+        public async Task<string> GetNoteText(int Id)
+        {
+            Note note = await _appDBContext.Notes.FirstOrDefaultAsync(c => c.Id.Equals(Id));
+            return note.Text;
+        }
         #endregion
     }
 }
