@@ -2,14 +2,8 @@
 @using MyNotes.Data
 @inject NoteService noteService
 
-<NavLink class="nav-link" href="AddNote">
-    <span class="oi oi-plus" aria-hidden="true">Add New</span>
 
-</NavLink>
 
-<h1>Notes</h1>
-<input type="text" @bind-value="@searchTerm" />
-<input type="button" value="Search" @onclick="@SearchNotes" />
 @if (NoteObj is null)
 {
     <p><em>Loading... !</em></p>
@@ -19,26 +13,49 @@ else
     <table class="table">
         <thead>
             <tr>
-                <th>Title</th>
-                <th>Text</th>
+                <th>
+                    <NavLink class="nav-link" href="AddNote">
+                        <input type="button" class="btn btn-primary" value="New note" />
+                    </NavLink>
+                
+                </th>
+               
+                <th>
+                    <div class="form-group">
+                        <input type="text" @bind-value="@searchTerm" />
+                        <input type="button" value="Search" @onclick="@SearchNotes" />
+                    </div>
+                </th>
+                <th>
+
+                    <p> Total notes: @totalNotes</p>
+
+                </th>
             </tr>
         </thead>
         <tbody>
             @foreach (var note in NoteObj)
             {
-                <tr>
-                    <td>@note.Title</td>
-                    <td>@note.Text</td>
+            <tr>
+                <td>@note.Title</td>
+                <td>@note.Text</td>
+                <td>
+                    <a class="nav-link" href="EditNote/@note.Id">
+                        <div class="btn btn-primary" aria-hidden="true">View</div>
+                    </a>
+                </td>
+                <td>
+                    <a class="nav-link" href="EditNote/@note.Id">
+                        <div class="btn btn-primary" aria-hidden="true">Edit</div>
+                    </a>
+                </td>
+                <td>
+                    <a class="nav-link" href="DeleteNote/@note.Id">
+                        <div class="btn btn-primary" aria-hidden="true">Delete</div>
+                    </a>
 
-                    <td>
-                        <a class="nav-link" href="EditNote/@note.Id">
-                            <span class="oi oi-pencil" aria-hidden="true">Edit</span>
-                        </a>
-                        <a class="nav-link" href="DeleteNote/@note.Id">
-                            <span class="oi oi-trash" aria-hidden="true">Delete</span>
-                        </a>
-                    </td>
-                </tr>
+                </td>
+            </tr>
             }
         </tbody>
     </table>
@@ -46,15 +63,22 @@ else
 
 
 @code {
+    private int totalNotes =0;
     private string searchTerm;
     List<Note> NoteObj;
     protected override async Task OnInitializedAsync()
     {
         NoteObj = await Task.Run(() => noteService.GetAllNotesAsync());
+        TotalNotesCount();
     }
 
     protected async Task SearchNotes()
     {
         NoteObj = await Task.Run(() => noteService.SeachTermsAsync(searchTerm));
+    }
+
+    protected void TotalNotesCount()
+    {
+        totalNotes = NoteObj.Count;
     }
 }

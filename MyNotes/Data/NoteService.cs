@@ -68,5 +68,9 @@ namespace MyNotes.Data
             || s.Text.ToLower().Contains(searchItem.ToLower())).ToListAsync();
         }
         #endregion
+
+        #region Total Notes Count
+
+        #endregion
     }
 }
